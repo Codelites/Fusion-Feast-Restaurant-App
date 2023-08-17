@@ -1,16 +1,16 @@
 import exp from "constants";
-import express from "express";
+import { Router} from "express";
 import { register,login } from "../controllers/auth-controller.js";
 
 
 
-const router = express.Router();
+const router = Router();
 
 
 
 // auth Routes
 router.post("/auth/register",register)
-router.post('/auth/login',()=>{console.log("GGGGGG")},login)
+router.post('/auth/login', login)
 // router.post('/auth/forgot-password')
 // router.post('/auth/reset-password')
 
@@ -28,8 +28,4 @@ router.post('/auth/login',()=>{console.log("GGGGGG")},login)
 // router.put('/cart/:id')
 // router.delete('/cart/:id')
 
-
-
-
-
-export default router
+export const appRouter = router;
