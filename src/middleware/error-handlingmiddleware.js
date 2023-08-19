@@ -7,7 +7,7 @@ const Errorhandler = function (err,req,res,next){
 
     if ( err instanceof  CustomError){
 
-         res.status(err.statuscode).json({
+      return  res.status(err.statuscode).json({
 
             success: false,
             message: err.message,
@@ -16,14 +16,14 @@ const Errorhandler = function (err,req,res,next){
 
         })
 
-        res.status(500).json({
-            success: false,
-            message: err.message,
-            // stack: config.server.mode === "development" ? err.stack : {}
-        });
     }
-
-
+    
+    
+    return res.status(500).json({
+         success: false,
+         message: err.message,
+         // stack: config.server.mode === "development" ? err.stack : {}
+     });
 }
 
 export default Errorhandler

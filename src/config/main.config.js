@@ -14,6 +14,12 @@ const config = {
     },
     services:{
         jwt_secret : process.env.JWT_SECRET
+    },
+    mailServices:{
+        service:{},
+        auth:{
+            
+        }
     }
 
 

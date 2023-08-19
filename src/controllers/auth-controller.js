@@ -2,6 +2,8 @@ import { CustomError } from "../helpers/error.helper.js";
 import User from "../models/user-model.js";
 import argon from "argon2"
 import { jwtsign } from "../services/jwt.services.js";
+import PasswordReset from "../models/passreset.js";
+
 
 export const register = async(req,res,next)=>{
 
@@ -40,7 +42,7 @@ try{
 
 
 export const login = async (req,res,next)=>{
-  console.log("gsgssfsfsfsf")
+  // console.log("gsgssfsfsfsf")
 
     const {email,password}= req.body;
 
@@ -66,4 +68,96 @@ export const login = async (req,res,next)=>{
     }
 
 
+}
+
+
+export const requestPasswordReset = async(req,res,next)=>{
+  console.log("gdgdgdgdfdfd")
+  //check for user via email
+    const {email}= req.body;
+try{
+    const user =  await User.findOne({email});
+
+    if(!user){throw new CustomError("invalid email",401)}
+
+  //generate token  and send email=============================
+
+    const token =  generateToken();
+
+    const hashedToken = await argon.hash(token);
+
+    ///save to the record
+
+    const resetRecord = await PasswordReset.create({
+      user: user,
+      resetToken: hashedToken
+    })
+
+    ////send token via email==================================
+    
+
+    await resetRecord.save()
+    return res.status(201).json({
+      success:true,
+      data:resetRecord
+    })
+
+}catch(err){
+next(err)
+
+}
+
+
+
+
+
+
+}
+
+
+
+
+export const passwordReset = async(req,res,next)=>{
+
+  //get new password
+  const {token} = req.params
+  const {newpassword}=req.body
+
+  
+  ////find user with email
+
+  try{
+
+    const user = PasswordReset.findOne({
+      
+      resetToken:token,
+      expiresIn: { $gt: Date.now() },
+
+    })
+
+    if(!user){throw new CustomError("invalid or expired token",401)}
+
+    ////has password
+    const hash = await argon2.hash(newpasswordpassword)
+
+    const  updateduserinfo = await User.findByIdAndUpdate(
+    { _id:user.userId ,
+      password : newpassword},
+      { new: true }
+    )
+
+
+    return res.status(201).json({
+      message:"passwrod reset successful",
+      data:user
+    })
+///=====================================email
+  }catch(err){
+    next(err)
+  }
+
+
+
+
+  
 }

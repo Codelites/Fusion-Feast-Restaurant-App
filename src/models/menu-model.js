@@ -7,12 +7,33 @@ const menuSchema = new Schema({
         type: String,
         required: true
     },
+
+    description:{
+        type:String,
+        required:true
+    },
+    pictureUrl:{
+        type:String,
+        // required: true
+    },
+
     price:{
         type: Number,
         required:true
+    },
+    
+    category:{
+        type: String,
+        enum:["burger","slides","drinks"],
+        required:true
+
+    },
+    ordersCount:{
+        type:Number,
+        default: 0
     }
 })
 
-const Menu = model("Menu",menuSchema);
+const MenuItem = model("Menu",menuSchema);
 
-export default Menu
+export default MenuItem

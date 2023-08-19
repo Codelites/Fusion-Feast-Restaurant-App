@@ -1,5 +1,5 @@
 
-import { required } from "joi";
+
 import { ObjectId,model,Schema} from "mongoose";
 
 
@@ -10,10 +10,23 @@ const cartSchema = new Schema({
         ref:"User",
         required:true
     },
-    items:{
-        type:ObjectId,
-        ref:"Menu"
-    },
+    items:[
+        {
+        
+        menuItem:    {
+            type:ObjectId,
+            ref:"Menu"
+             },
+
+        quantity:{
+            type:Number,
+            required:true
+
+        }
+        
+    
+    }
+    ],
     totalAmount:{
         type: Number,
         required:true
