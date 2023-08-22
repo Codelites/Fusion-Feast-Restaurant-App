@@ -7,7 +7,7 @@ const Errorhandler = function (err,req,res,next){
 
     if ( err instanceof  CustomError){
 
-      return  res.status(err.statuscode).json({
+         return res.status(err.statuscode).json({
 
             success: false,
             message: err.message,

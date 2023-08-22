@@ -11,7 +11,7 @@ import {generateToken} from "../helpers/tokenGenerator.js"
 
 
 export const register = async(req,res,next)=>{
-
+  console.log( "register" );
     const {email,username,password} = req.body
 try{
     const emailexist = await User.findOne({email});
@@ -58,6 +58,7 @@ try{
 
 export const login = async (req,res,next)=>{
   // console.log("gsgssfsfsfsf")
+  console.log("login")
 
     const {email,password}= req.body;
 
