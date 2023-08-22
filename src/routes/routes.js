@@ -1,10 +1,14 @@
 
 import express from "express";
-import { register,login, requestPasswordReset } from "../controllers/auth-controller.js";
+import { register,login, requestPasswordReset, passwordReset } from "../controllers/auth-controller.js";
 import { createMenuItem, deleteMenuItem, getMenuItem, getMenusItems, updateMenuItem } from "../controllers/menu-controller.js";
 import { addItemToCart, getCartContent, updateCartItemQuantity, clearCart,deleteCartItem } from "../controllers/cart-controller.js";
 
 import { getOrderDetails,getUserOrderHistory,checkoutAndPlaceOrder } from "../controllers/order-controller.js";
+
+
+import { AuthCheck } from "../middleware/auth-middleware.js";
+import { checkUserRoles } from "../middleware/user-roles-middleware.js";
 
 
 const router = express.Router();
@@ -14,12 +18,12 @@ const router = express.Router();
 // auth Routes
 router.post("/auth/register",register)
 router.post('/auth/login',login)
-router.post('/auth/forgot-password', ()=>{console.log("ffdffddfd")},requestPasswordReset)
-// router.post('/auth/reset-password')
+router.post('/auth/forgot-password',requestPasswordReset)
+router.post('/auth/reset-password/:token',passwordReset)
 
 // // Menu routes 
-router.get('/menu/getmenus',getMenusItems)
-router.get('/menu/:id',getMenuItem)
+router.get('/menu/getmenus/',getMenusItems)
+router.get('/menu/getmenu/:id',AuthCheck,checkUserRoles("user"),getMenuItem)
 router.post('/menu',createMenuItem)
 router.put('/menu/:id',updateMenuItem)
 router.delete('/menu/:id',deleteMenuItem)

@@ -18,6 +18,10 @@ try{
    const decoded =  jwt.verify(token,config.services.jwt_secret)
     
     req.user = decoded
+    req.userRole = decoded.body.role;
+    // console.log(decoded)
+
+    console.log("User Role:", req.userRole);
     next()
 }catch(err){
 

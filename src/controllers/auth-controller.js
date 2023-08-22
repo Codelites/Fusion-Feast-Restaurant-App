@@ -3,6 +3,11 @@ import User from "../models/user-model.js";
 import argon from "argon2"
 import { jwtsign } from "../services/jwt.services.js";
 import PasswordReset from "../models/passreset.js";
+import { sendWelcomeEmail } from "../services/mailservice.js";
+
+
+import {generateToken} from "../helpers/tokenGenerator.js"
+
 
 
 export const register = async(req,res,next)=>{
@@ -23,10 +28,21 @@ try{
     const user = await User.create({email,username,password:hashedpass});
 
     await user.save()
+
+
+    // =============
+     sendWelcomeEmail({
+      username,
+      email
+    })
+
+
   return  res.status(200).json({
         success: true,
         data: user
     })
+    //mail logic
+
 
 
 
@@ -35,7 +51,6 @@ try{
     // res.status(500).json({ error: 'Server error' });
     next(err)
   }
-//mail logic
 }
 
 
@@ -60,8 +75,17 @@ export const login = async (req,res,next)=>{
           throw new CustomError("incorrect email or password",404)
       }
       // assign token 
-      const token = jwtsign( user )
-      return res.status(200).json({user})
+      const token = jwtsign({ userId: user.id, role: user.role });
+
+
+      return res.status(200).json({
+          userRole: user.role,
+          token,
+          user: {
+            id: user.id,
+            
+        },
+    })
 
     }catch(err){
       next(err)
@@ -75,17 +99,20 @@ export const requestPasswordReset = async(req,res,next)=>{
   console.log("gdgdgdgdfdfd")
   //check for user via email
     const {email}= req.body;
-try{
-    const user =  await User.findOne({email});
+    try{
+      const user =  await User.findOne({email});
+      
+      if(!user){throw new CustomError("invalid email",401)}
+      
+      //generate token  and send email=============================
+      
+      const token =  generateToken();
 
-    if(!user){throw new CustomError("invalid email",401)}
-
-  //generate token  and send email=============================
-
-    const token =  generateToken();
-
-    const hashedToken = await argon.hash(token);
-
+      console.log(token)
+      
+      const hashedToken = await argon.hash(token)
+      
+      console.log("werwerrwerw")
     ///save to the record
 
     const resetRecord = await PasswordReset.create({
@@ -95,8 +122,9 @@ try{
 
     ////send token via email==================================
     
-
     await resetRecord.save()
+
+
     return res.status(201).json({
       success:true,
       data:resetRecord
@@ -124,32 +152,44 @@ export const passwordReset = async(req,res,next)=>{
   const {newpassword}=req.body
 
   
-  ////find user with email
-
+  ////find user with token
+  
+  
   try{
-
-    const user = PasswordReset.findOne({
+    // const tokenhash = await argon.hash(token)
+    
+    const passwordReset = await PasswordReset.findOne({
       
       resetToken:token,
       expiresIn: { $gt: Date.now() },
 
-    })
+    }).populate('user')
 
-    if(!user){throw new CustomError("invalid or expired token",401)}
+    console.log(passwordReset)
 
+    if(!passwordReset){throw new CustomError("invalid or expired token",401)}
+
+
+    if (!passwordReset.user || !passwordReset.user._id) {
+      throw new CustomError("User information not available", 401);
+    }
     ////has password
-    const hash = await argon2.hash(newpasswordpassword)
+    console.log(newpassword)
+    const hash = await argon.hash(newpassword)
+
+    
+      console.log(passwordReset.user._id)
 
     const  updateduserinfo = await User.findByIdAndUpdate(
-    { _id:user.userId ,
-      password : newpassword},
+     passwordReset.user._id,
+      {password : hash},
       { new: true }
     )
-
+      
 
     return res.status(201).json({
-      message:"passwrod reset successful",
-      data:user
+      message:"password reset successful",
+      data:updateduserinfo
     })
 ///=====================================email
   }catch(err){

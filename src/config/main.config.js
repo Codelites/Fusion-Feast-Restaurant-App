@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+// import path from "path"
 
 dotenv.config({ path: ".env.example" });
 
@@ -16,11 +17,16 @@ const config = {
         jwt_secret : process.env.JWT_SECRET
     },
     mailServices:{
-        service:{},
+        
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT, 
+        
         auth:{
-            
+           user: process.env.EMAIL_USER,
+           pass: process.env.EMAIL_PASS
         }
-    }
+    },
+    // rootPath: path.resolve(__dirname)
 
 
 

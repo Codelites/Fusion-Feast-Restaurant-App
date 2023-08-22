@@ -4,8 +4,11 @@ import router from "./routes/routes.js";
 
 import config from "./config/main.config.js";
 import Errorhandler from "./middleware/error-handlingmiddleware.js";
+// import url from 'url';
+// import { Join } from "path";
 
-
+// const __dirname =url.fileURLToPath(new url.URL('.', import.meta.url));
+// app.set("views", join(__dirname, "views"));
 
 const app = express();
 

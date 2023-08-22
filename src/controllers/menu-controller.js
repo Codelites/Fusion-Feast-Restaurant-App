@@ -15,7 +15,7 @@ export const  getMenusItems =async (req,res,next)=>{
 
         }else{
 
-            allMenuItems = await Menu.find()
+            allMenuItems = await MenuItem.find()
 
         }
 
@@ -98,7 +98,7 @@ export const  updateMenuItem =async (req,res,next)=>{
             name,price
         }, { new: true })
 
-        if(!menu){throw new CustomError ("menu does not exist",401)}
+        if(!updateMenuItem){throw new CustomError ("menu does not exist",401)}
 
             return res.status(201).json({
                 success:true,

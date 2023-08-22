@@ -1,5 +1,4 @@
 
-import { captureRejectionSymbol } from "events";
 import { CustomError } from "../helpers/error.helper.js";
 import Cart from "../models/cart.model.js"
 import MenuItem from "../models/menu-model.js"
