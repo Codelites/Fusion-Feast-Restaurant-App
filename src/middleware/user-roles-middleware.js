@@ -6,7 +6,7 @@ export const checkUserRoles = (requiredRole)=> (req,res,next)=>{
 
     const userRole = req.userRole
     console.log(userRole)
-    console.log("444444")
+    // console.log("444444")
     if( userRole === requiredRole){
         console.log("tftftftf")
         next()

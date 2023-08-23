@@ -5,7 +5,7 @@ dotenv.config({ path: ".env.example" });
 
 // import { config as Configuration } from "dotenv";
 // Configuration({ path: ".env.example" });
-// import mongoose from "mongoose";
+import mongoose from "mongoose";
 
 const config = {
 

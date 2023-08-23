@@ -1,6 +1,7 @@
 import Order from "../models/order-model.js";
 import Cart from "../models/cart.model.js";
 import { CustomError } from "../helpers/error.helper.js";
+import mongoose from "mongoose";
 
 
 
@@ -103,9 +104,13 @@ export const getOrderDetails =async (req,res,next)=>{
 
         const {orderId}= req.params
 
+
+        //conevrt  orderid string to object
+         const orderIdObj =  new mongoose.Types.ObjectId(orderId)
         ///find d order
 
-        const order = await  Order.findOne({orderId})
+        const order = await  Order.findOne({_id:orderIdObj})
+        console.log(order)
 
         if (!order) {
             throw new CustomError("Order not found", 404);

@@ -1,9 +1,10 @@
 import express from "express";
 import { dbConnect } from "./database/db.js";
-import { appRouter } from "./routes/routes.js";
+
 
 import config from "./config/main.config.js";
 import Errorhandler from "./middleware/error-handlingmiddleware.js";
+import router from "./routes/routes.js"
 // import url from 'url';
 // import { Join } from "path";
 
@@ -15,7 +16,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.json())
 
-app.use("/api/v1", appRouter);
+app.use("/api/v1/",router)
 
 config.connectToDatabase();
 

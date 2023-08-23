@@ -103,7 +103,7 @@ export const getCartContent = async(req,res,next)=>{
 
 
 
-// ==================WORKON
+// ==================WORKON....Done
     
 
 export const updateCartItemQuantity = async(req,res,next)=>{
@@ -111,16 +111,22 @@ export const updateCartItemQuantity = async(req,res,next)=>{
     try {
         const {user}= req.params
         const {quantity,menuItemId}= req.body
+        console.log("dddddd")
         //find cart associated with user
-        const cart = await Cart.findOne({
-            user
-            }).populate('items.menuItem');
+        const cart = await Cart.findOne(
+           { user}
+            ).populate({
+                path: 'items.menuItem',
+                model: 'Menu', 
+            });
+            
+            console.log(cart)
 
         if(!cart){throw new CustomError("cart not found",404)}
-
             //menu itemindex associated to cart
-        const menuItemIndex = cart.items.findIndex(item => item.menuItem.toString()=== menuItemId);
+        const menuItemIndex = cart.items.findIndex(item => item.menuItem._id.toString()=== menuItemId);
        
+        //if it doesnt exist
         if (menuItemIndex === -1) {
             throw new CustomError("Menu item not found in cart", 404);
         }

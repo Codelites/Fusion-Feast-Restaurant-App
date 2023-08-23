@@ -7,7 +7,7 @@ import config from "../config/main.config.js";
 mongoose.connect(config.database.dburl,{ useNewUrlParser: true, useUnifiedTopology: true })
 .then(()=>{
 
-    console.log("db connected successfully")
+    console.log("db connected uccessfully")
 }).catch((err)=>{
     console.error('Error connecting to the database:', err.message);
 })
