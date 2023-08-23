@@ -42,7 +42,4 @@ router.get('/order/place-order/:user',AuthCheck, checkoutAndPlaceOrder)
 router.get('/order/order-history/:user',AuthCheck, getUserOrderHistory)
 router.get('/order/order-details/:orderId',AuthCheck, getOrderDetails)
 
-
-
-
 export default router

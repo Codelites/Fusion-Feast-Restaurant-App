@@ -3,7 +3,7 @@ import User from "../models/user-model.js";
 import argon from "argon2"
 import { jwtsign } from "../services/jwt.services.js";
 import PasswordReset from "../models/passreset.js";
-import { sendWelcomeEmail } from "../services/mailservice.js";
+import { sendWelcomeEmail } from "../services/mail.service.js";
 
 
 import {generateToken} from "../helpers/tokenGenerator.js"
