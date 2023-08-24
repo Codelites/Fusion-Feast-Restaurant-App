@@ -3,7 +3,7 @@ import User from "../models/user-model.js";
 import argon from "argon2"
 import { jwtsign } from "../services/jwt.services.js";
 import PasswordReset from "../models/passreset.js";
-import { sendWelcomeEmail } from "../services/mail.service.js";
+import { sendTokenMail, sendWelcomeEmail,resetSuccesfulMail } from "../services/mail.service.js";
 
 
 import {generateToken} from "../helpers/tokenGenerator.js"
@@ -11,7 +11,7 @@ import {generateToken} from "../helpers/tokenGenerator.js"
 
 
 export const register = async(req,res,next)=>{
-  console.log( "register" );
+  
     const {email,username,password} = req.body
 try{
     const emailexist = await User.findOne({email});
@@ -110,6 +110,13 @@ export const requestPasswordReset = async(req,res,next)=>{
       const token =  generateToken();
 
       console.log(token)
+
+      ////send token via email==================================
+    
+      sendTokenMail({
+        username:user.username,
+        email,token
+      })
       
       const hashedToken = await argon.hash(token)
       
@@ -121,7 +128,6 @@ export const requestPasswordReset = async(req,res,next)=>{
       resetToken: hashedToken
     })
 
-    ////send token via email==================================
     
     await resetRecord.save()
 
@@ -144,7 +150,7 @@ next(err)
 }
 
 
-
+// ====================BROKEN
 
 export const passwordReset = async(req,res,next)=>{
 
@@ -153,12 +159,12 @@ export const passwordReset = async(req,res,next)=>{
   const {newpassword}=req.body
 
   
-  ////find user with token
   
+  console.log(token)
   
   try{
-    // const tokenhash = await argon.hash(token)
     
+    ////find user with token
     const passwordReset = await PasswordReset.findOne({
       
       resetToken:token,
@@ -186,7 +192,12 @@ export const passwordReset = async(req,res,next)=>{
       {password : hash},
       { new: true }
     )
-      
+      /////send mail success
+
+    resetSuccesfulMail({
+      username:passwordReset.user.username,
+      email:passwordReset.user.email
+    })
 
     return res.status(201).json({
       message:"password reset successful",

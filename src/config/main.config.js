@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 // import path from "path"
 
-dotenv.config({ path: ".env.example" });
+dotenv.config();
 
 // import { config as Configuration } from "dotenv";
 // Configuration({ path: ".env.example" });
@@ -41,7 +41,10 @@ const config = {
         }
     },
     // rootPath: path.resolve(__dirname)
-
+    payStack:{
+      publicKey: process.env.PAY_PUBLIC_KEY,
+      secretKey: process.env.PAY_SECRET_KEY
+    }
 
 
 

@@ -28,9 +28,6 @@ transporter.verify((error, success) => {
 export const sendWelcomeEmail = async ({ username, email }) => {
   const templatePath = path.join(process.cwd(), "./src/views/welcome.ejs");
 
-  // const templatePath = new URL('views/welcome.ejs', import.meta.url).pathname;
-  // const templateContent = fs.readFileSync(templatePath, 'utf-8');
-
   const data = await ejs.renderFile(templatePath, { user: username});
 
   const mainOptions = {
@@ -42,3 +39,43 @@ export const sendWelcomeEmail = async ({ username, email }) => {
 
   await transporter.sendMail(mainOptions);
 };
+
+
+
+
+
+export const sendTokenMail = async ({username,email,token})=>{
+
+  const templatePath = path.join(process.cwd(),"./src/views/reset-pass.ejs")
+
+  const data = await ejs.renderFile(templatePath,{user:username,token})
+
+  
+  const mainOptions = {
+    from: '"support" testmail@gmail.com',
+    to: email,
+    subject: "Password Reset",
+    html: data,
+  };
+
+
+    await transporter.sendMail(mainOptions)
+}
+
+
+
+export const resetSuccesfulMail = async ({username,email})=>{
+
+  const templatePath = path.join(process.cwd(),"./src/views/passwordResetSuccess.ejs")
+  const data = await ejs.renderFile(templatePath,{user:username})
+
+  const mainOptions = {
+    from: '"support" testmail@gmail.com',
+    to: email,
+    subject: "Password Reset",
+    html: data,
+  };
+
+  await transporter.sendMail(mainOptions)
+
+}
