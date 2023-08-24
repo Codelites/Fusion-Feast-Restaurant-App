@@ -2,39 +2,32 @@ import Order from "../models/order-model.js";
 import Cart from "../models/cart.model.js";
 import { CustomError } from "../helpers/error.helper.js";
 import mongoose from "mongoose";
-
-
-
+import MenuItem from "../models/menu-model.js";
 
 
 export const checkoutAndPlaceOrder = async (req,res,next)=>{
 
     try {
-        const {user}= req.params
+        const { body} = req.user
 
         ///find cart
-        const cart  =  await Cart.findOne({user}).populate("items.menuItem");
-
+        const cart  =  await Cart.findOne({user: body.userId}).populate("items.menuItem");
 
         if(!cart){throw new CustomError("cart not found",404) }
 
         ///create order 
         const order = new Order({
-        
             user:cart.user,
             items: cart.items,
             totalAmount: cart.totalAmount,
-        
         })
 
         // Update the ordersCount for menu items in the cart to keep track of menu sales
-        for (const cartItem of cart.items) {
-   
+        for ( const cartItem of cart.items )
+        {
             await MenuItem.updateOne(
-       
-                { _id: cartItem.menuItem._id },
+                { _id: cartItem.menuItem.id },
         { $inc: { ordersCount: cartItem.quantity } }
-
             );
         }
 

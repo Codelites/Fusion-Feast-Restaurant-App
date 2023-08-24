@@ -6,10 +6,11 @@ import { createMenuItem, deleteMenuItem, getMenuItem, getMenusItems, updateMenuI
 import { addItemToCart, getCartContent, updateCartItemQuantity, clearCart,deleteCartItem } from "../controllers/cart-controller.js";
 
 import { getOrderDetails,getUserOrderHistory,checkoutAndPlaceOrder } from "../controllers/order-controller.js";
-import initializePayment from "../controllers/paystack.js"
+// import initializePayment from "../controllers/paystack.js"
 
 import { AuthCheck } from "../middleware/auth-middleware.js";
 import { checkUserRoles } from "../middleware/user-roles-middleware.js";
+import { initializeTransaction } from "../controllers/transaction.controller.js";
 
 
 const router = Router();
@@ -38,11 +39,12 @@ router.delete('/cart/:cartItemId',AuthCheck,deleteCartItem)
 
 
 ///order routes
-router.get('/order/place-order/:user',AuthCheck, checkoutAndPlaceOrder)
+router.get('/order/place-order',AuthCheck, checkoutAndPlaceOrder)
 router.get('/order/order-history/:user',AuthCheck, getUserOrderHistory)
 router.get('/order/order-details/:orderId',AuthCheck, getOrderDetails)
+router.post("/order/intialize-payment/:orderId", AuthCheck, initializeTransaction);
 
-router.post('/acceptpayment', initializePayment.acceptPayment);
+// router.post('/acceptpayment', initializePayment.acceptPayment);
 
 
 export default router

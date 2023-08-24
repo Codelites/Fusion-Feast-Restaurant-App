@@ -4,46 +4,34 @@ import {ObjectId,Schema,model,} from "mongoose"
 
 
 
-const orderSchema = new Schema({
-
-
-    user:{
-        type:ObjectId,
-        ref:"User"
+const orderSchema = new Schema(
+  {
+    user: {
+      type: ObjectId,
+      ref: "User",
     },
 
-    items:[{
-
-        menuItem:{
-            type:ObjectId,
-            ref:"Menu",
-            required:true
-
+    items: [
+      {
+        menuItem: {
+          type: ObjectId,
+          ref: "Menu",
+          required: true,
         },
-        quantity:{
-            type:Number,
-            required:true
+        quantity: {
+          type: Number,
+          required: true,
         },
+      },
+    ],
 
-        
-        
-        
-                
-            }
-        ],
-
-        totalAmount: {
-            type: Number,
-            required: true,
-        },
-
-        orderDate: {
-            type: Date,
-            default: Date.now,
-        },
-
-
-})
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
 
 

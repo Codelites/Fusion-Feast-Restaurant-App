@@ -10,90 +10,74 @@ import {generateToken} from "../helpers/tokenGenerator.js"
 
 
 
-export const register = async(req,res,next)=>{
-  
-    const {email,username,password} = req.body
-try{
-    const emailexist = await User.findOne({email});
+export const register = async (req, res, next) => {
+  const { email, username, password } = req.body;
+  try {
+    const emailexist = await User.findOne({ email });
 
-     if(emailexist){
+    if (emailexist) {
+      throw new CustomError("user already exists", 409);
+      // next(error)
+    }
 
-        throw new CustomError("user already exists",409)
-        // next(error)
-        
-     }  
-     
-     const hashedpass = await argon.hash(password)
+    const hashedpass = await argon.hash(password);
 
-    const user = await User.create({email,username,password:hashedpass});
+    const user = await User.create({ email, username, password: hashedpass });
 
-    await user.save()
-
+    await user.save();
 
     // =============
-     sendWelcomeEmail({
-      username,
-      email
-    })
+    //  sendWelcomeEmail({
+    //   username,
+    //   email
+    // })
 
-
-  return  res.status(200).json({
-        success: true,
-        data: user
-    })
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
     //mail logic
-
-
-
-
-}catch(err){
+  } catch (err) {
     // console.error(err);
     // res.status(500).json({ error: 'Server error' });
-    next(err)
+    next(err);
   }
-}
+};
 
-
-
-
-export const login = async (req,res,next)=>{
+export const login = async (req, res, next) => {
   // console.log("gsgssfsfsfsf")
   console.log("login")
 
-    const {email,password}= req.body;
+  const { email, password } = req.body;
+  console.log( email );
+  try {
+    // check if email exist
+    const user = await User.findOne({ email: email });
 
-    try{
-
-      // check if email exist
-      const user = await User.findOne({email})
-
-      if(!user){throw new CustomError("incorrect email or password",404)}
-
-
-      // verify pass word
-      const verifiedpasssword = await argon.verify(user.password,password)
-      if (!verifiedpasssword){
-          throw new CustomError("incorrect email or password",404)
-      }
-      // assign token 
-      const token = jwtsign({ userId: user.id, role: user.role });
-
-
-      return res.status(200).json({
-          userRole: user.role,
-          token,
-          user: {
-            id: user.id,
-            
-        },
-    })
-
-    }catch(err){
-      next(err)
+    console.log( user );
+    if (!user) {
+      throw new CustomError("incorrect email or password", 404);
     }
 
+    // verify pass word
+    const verifiedpasssword = await argon.verify(user.password, password);
+    if (!verifiedpasssword) {
+      throw new CustomError("incorrect email or password", 404);
+    }
+    // assign token
+    const token = jwtsign({ userId: user.id, role: user.role });
 
-}
+    return res.status(200).json({
+      userRole: user.role,
+      token,
+      user: {
+        id: user.id,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 
 export const requestPasswordReset = async(req,res,next)=>{

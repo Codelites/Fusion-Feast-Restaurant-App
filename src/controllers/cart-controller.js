@@ -3,15 +3,16 @@ import { CustomError } from "../helpers/error.helper.js";
 import Cart from "../models/cart.model.js"
 import MenuItem from "../models/menu-model.js"
 import Order from "../models/order-model.js";
-
-
+import User from "../models/user-model.js";
 
 export const addItemToCart = async(req,res,next)=>{
 
     try {
-        const {menuItemId,user,quantity} = req.body;
+        const { menuItemId, quantity } = req.body;
+        const { body } = req.user;
 
         ////chk id cart exist for the user...if not create one
+        const user = await User.findById( body.userId );
 
         let cart = await Cart.findOne({user})
         

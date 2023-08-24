@@ -1,5 +1,6 @@
 import { error } from "console";
 import { CustomError } from "../helpers/error.helper.js";
+import config from "../config/main.config.js";
 
 
 const Errorhandler = function (err,req,res,next){
@@ -8,12 +9,10 @@ const Errorhandler = function (err,req,res,next){
     if ( err instanceof  CustomError){
 
          return res.status(err.statuscode).json({
-
             success: false,
             message: err.message,
             error_code:err.statuscode,
-            // stack: config.server.mode === 'development' ? err.stack : {}
-
+            stack: config.server.mode === 'development' ? err.stack : {}
         })
 
     }
