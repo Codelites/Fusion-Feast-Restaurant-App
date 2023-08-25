@@ -29,17 +29,18 @@ const config = {
       .catch((err) => {
         console.error("Error connecting to the database:", err.message);
       } );
-    
-    // seed the database
-    if ( ( await User.find() ).length === 0 ) await User.insertMany( records.users );
-
-    // create a cart for the user with the role of user
-    const user = await User.findOne( { email: "doejane@gmail.com" } );
-    
-    await Cart.create( { user } );
-
-    if ( ( await MenuItem.find() ).length === 0 ) await MenuItem.insertMany( records.menu );
   },
+  //   // seed the database
+  //   if ( ( await User.find() ).length === 0 ) await User.insertMany( records.users );
+
+  //   // create a cart for the user with the role of user
+  //   const user = await User.findOne( { email: "doejane@gmail.com" } );
+    
+  //   await Cart.create( { user } );
+
+  //   if ( ( await MenuItem.find() ).length === 0 ) await MenuItem.insertMany( records.menu );
+  // },
+  
   services: {
     jwt_secret: process.env.JWT_SECRET,
   },

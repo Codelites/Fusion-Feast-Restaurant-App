@@ -31,5 +31,6 @@ export const initializeTransaction = async function ( req, res, next )
         } );
     } catch (e) {
         next( e );
+        console.log(e)
     }
 }

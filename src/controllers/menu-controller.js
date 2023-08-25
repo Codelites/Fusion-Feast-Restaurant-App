@@ -88,21 +88,23 @@ export const  createMenuItem = async(req,res,next)=>{
 
 export const  updateMenuItem =async (req,res,next)=>{
 
-    const {name,price}= req.body
+    const {name,price,category,description,ordersCount,pictureUrl}= req.body
     const {id}= req.params
 
     try{
         /////chk for menu
+        console.log(id)
         const updatedMenuItem = await MenuItem.findByIdAndUpdate(id,{
         
-            name,price
+            name,price,category,description,ordersCount,pictureUrl
         }, { new: true })
+        console.log(updatedMenuItem)
 
-        if(!updateMenuItem){throw new CustomError ("menu does not exist",401)}
+        if(!updatedMenuItem){throw new CustomError ("menu does not exist",401)}
 
             return res.status(201).json({
                 success:true,
-                data: updateMenuItem
+                data: updatedMenuItem
             })
 
 
