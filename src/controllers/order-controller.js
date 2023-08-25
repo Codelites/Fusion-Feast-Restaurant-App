@@ -8,7 +8,7 @@ import MenuItem from "../models/menu-model.js";
 export const checkoutAndPlaceOrder = async (req,res,next)=>{
 
     try {
-        const { body} = req.user
+        const {body} = req.user
 
         ///find cart
         const cart  =  await Cart.findOne({user: body.userId}).populate("items.menuItem");
@@ -65,11 +65,11 @@ export const getUserOrderHistory = async(req,res,next)=>{
 
         try {
             
-            const {user}= req.params;
+            const {body}= req.user;
 
             ////chk for orders of tis uuser
 
-            const  orders = await Order.findOne({user})
+            const  orders = await Order.findOne({user:body.userId})
 
 
             return res.status(200).json({

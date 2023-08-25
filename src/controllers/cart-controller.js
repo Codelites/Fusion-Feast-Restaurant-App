@@ -19,8 +19,7 @@ export const addItemToCart = async(req,res,next)=>{
         if(!cart){ 
             cart = new Cart({
                 user,
-                items:[],
-                totalAmount: 0
+                items:[]
             })
          }
 
@@ -81,9 +80,9 @@ export const getCartContent = async(req,res,next)=>{
 
     try {
         
-        const {user}= req.params
+        const {body}= req.user
 
-        const cart = await Cart.findOne({user}).populate("items.menuItem")
+        const cart = await Cart.findOne({user:body.userId}).populate("items.menuItem")
 
         if(!cart){ throw new CustomError("cart not found",404)}
 
@@ -110,12 +109,13 @@ export const getCartContent = async(req,res,next)=>{
 export const updateCartItemQuantity = async(req,res,next)=>{
    
     try {
-        const {user}= req.params
+        const {body}= req.user
+
         const {quantity,menuItemId}= req.body
         console.log("dddddd")
         //find cart associated with user
         const cart = await Cart.findOne(
-           { user}
+           { user:body.userId}
             ).populate({
                 path: 'items.menuItem',
                 model: 'Menu', 
@@ -168,10 +168,10 @@ export const clearCart = async(req,res,next)=>{
 
     try {
 
-        const {user} = req.params;
+        const {body} = req.user;
 
         ////find cart
-        const cart = await Cart.findOne({user})
+        const cart = await Cart.findOne({user:body.userId})
 
         if(!cart){throw CustomError("cart not found",404)}
 
@@ -203,18 +203,18 @@ export const clearCart = async(req,res,next)=>{
 
 export const deleteCartItem = async(req,res,next)=>{
 
-    const {cartItemId} = req.body
-
+    
     try {
         
+        const {cartItemId} = req.body
         // find d cart that has the menu id
-        const cart = await Cart.find({'items._id':cartItemId})
+        const cart = await Cart.findOne({'items._id':cartItemId})
         
         if(!cart){throw new CustomError("cart doesn't exist", 404)}
 
         ///find cart item within found cart
 
-        const cartItem = await cart.items.find(item => item._id.toString()=== cartItemId) 
+        const cartItem = cart.items.find(item => item._id.toString() === cartItemId) 
 
         if(!cartItem){ throw new CustomError("cartitem not found",404)}
 

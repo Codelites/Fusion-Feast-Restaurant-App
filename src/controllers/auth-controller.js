@@ -1,7 +1,7 @@
 import { CustomError } from "../helpers/error.helper.js";
 import User from "../models/user-model.js";
 import argon from "argon2"
-import { jwtsign } from "../services/jwt.services.js";
+import { jwtlogout, jwtsign } from "../services/jwt.services.js";
 import PasswordReset from "../models/passreset.js";
 import { sendTokenMail, sendWelcomeEmail,resetSuccesfulMail } from "../services/mail.service.js";
 
@@ -197,3 +197,17 @@ export const passwordReset = async(req,res,next)=>{
 
   
 }
+
+
+
+export const logout = async (req, res, next) => {
+  try {
+
+    const expiredToken = await jwtlogout();
+
+    res.status(200).json({ message: "Logged out successfully", token: expiredToken });
+    
+  } catch (error) {
+    next(error);
+  }
+};
