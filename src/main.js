@@ -15,7 +15,14 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.json())
-
+app.use( '/', ( req, res, next ) =>
+{
+    return res.status(200).json({
+      success: true,
+      message:
+        "Welcome to Fusion Feast Restaurant API. You can check out the docs at https://documenter.getpostman.com/view/27961423/2s9Y5WxPBv for information on how to use the API",
+    });
+})
 app.use("/api/v1/",router)
 
 config.connectToDatabase();
