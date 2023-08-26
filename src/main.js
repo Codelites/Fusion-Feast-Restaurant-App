@@ -1,6 +1,10 @@
 import express from "express";
 import { dbConnect } from "./database/db.js";
 
+import fs from "fs/promises";
+import path from "path";
+
+
 
 import config from "./config/main.config.js";
 import Errorhandler from "./middleware/error-handlingmiddleware.js";
@@ -18,14 +22,24 @@ app.use(express.json())
 
 app.use("/api/v1/",router)
 
-app.get( '/', ( req, res, next ) =>
+app.get( '/', async ( req, res, next ) =>
 {
-    return res.status(200).json({
-      success: true,
-      message:
-        "Welcome to Fusion Feast Restaurant API. You can check out the docs at https://documenter.getpostman.com/view/27961423/2s9Y5WxPBv for information on how to use the API",
-    });
-})
+    const moduleDir = path.dirname(new URL(import.meta.url).pathname);
+    const filePath = path.join(moduleDir, "welcome-message.html");
+
+    try {
+        // Read the content of the HTML file
+        const htmlContent = await fs.readFile(filePath, "utf8");
+
+        // Send the HTML content as the response
+        res.send(htmlContent);
+    } catch (err) {
+        console.error("Error reading HTML file:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+   
 config.connectToDatabase();
 
 app.use(Errorhandler)
